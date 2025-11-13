@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        .form-container { width: 350px; margin: auto; }
+        input[type=text], input[type=email], input[type=password] {
+            width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc;
+        }
+        input[type=file] {
+            margin: 10px 0;
+        }
+        button {
+            background: #0D6EFD; color: white;
+            padding: 10px; width: 100%; border: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Registro de Usuario</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Registrar</button>
+    </form>
+</div>
+
+</body>
+</html>

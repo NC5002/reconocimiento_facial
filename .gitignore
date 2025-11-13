@@ -1,0 +1,14 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Cachés de Python
+__pycache__/
+*.pyc
+
+# Archivos pesados del modelo
+*.dat
+*.pyd
+
+# Archivos temporales
+*.log

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #0d6efd;
+            color: white;
+            text-decoration: none;
+            margin-right: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Bienvenido, {{ request.user.username }}</h2>
+
+<!-- Botón para registrar asistencia -->
+<a href="{% url 'registrar_asistencia' %}" class="button">Registrar asistencia</a>
+
+<!-- Botón de logout (POST) -->
+<form action="{% url 'logout' %}" method="POST" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="button logout">Cerrar sesión</button>
+</form>
+
+</body>
+</html>
