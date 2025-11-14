@@ -196,5 +196,190 @@ Permite construir datasets personalizados, correlacionar métricas con entornos 
 
 ---
 
-Lenguaje: Python 3.11+
+## ⚙️ Sistema Web de Reconocimiento Facial (Django + face_recognition)
+
+Este proyecto combina dos componentes:
+
+1. Laboratorio de reconocimiento facial en Python
+
+2. Sistema web en Django con registro, login y asistencia mediante reconocimiento facial
+
+El sistema web permite:
+
+1. Registrar usuarios con foto
+
+2. Guardar la codificación facial (embedding)
+
+3. Iniciar sesión
+
+4. Registrar asistencia usando la webcam
+
+5. Verificar identidad comparando el rostro en vivo con el rostro registrado
+
+---
+
+## ⚡ Configurar el proyecto Django
+
+Navegar a la carpeta del proyecto:
+cd asistencias
+
+Migrar la base de datos:
+python manage.py makemigrations
+python manage.py migrate
+
+---
+
+## ⚡ Configurar MEDIA en settings.py
+
+Agregar:
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+Y en asistencias/urls.py:
+
+from django.conf import settings
+from django.conf.urls.static import static
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+Esto es necesario para guardar fotos de usuario.
+
+---
+
+## ⚡ Flujo del sistema
+
+*Registro*
+Ruta:
+/registro/
+
+El usuario debe llenar:
+
+1. Username
+2. Email
+3. Contraseña
+4. Foto del rostro
+
+Django:
+
+*Procesa la foto*
+*Genera encoding facial con face_recognition*
+*Guarda la foto y el encoding en la base SQLite*
+
+*Login*
+
+Ruta:
+/login/
+
+*Dashboard*
+
+Ruta:
+/dashboard/
+
+*Registro de asistencia con webcam*
+La página:
+
+- Activa la webcam
+
+- Captura un frame
+
+- Lo envía al backend
+
+- Genera encoding del rostro en vivo
+
+- Compara con el encoding guardado
+
+- Guarda el resultado:
+
+- - aceptado
+
+- - rechazado
+
+Los resultados se almacenan en:
+core.models.Asistencia
+
+---
+
+## Cómo ejecutar el sistema
+
+Cada vez que quieras correr el proyecto:
+***cd C:\reconocimiento_facial
+.\.venv\Scripts\Activate.ps1
+cd asistencias
+python manage.py runserver***
+
+Abrir en el navegador:
+http://127.0.0.1:8000/
+
+---
+
+## Comprobar datos en la base de datos
+
+Abrir la consola interactiva de Django:
+python manage.py shell
+
+Ver usuarios registrados:
+from core.models import Usuario
+Usuario.objects.all()
+
+Ver asistencias registradas:
+from core.models import Asistencia
+Asistencia.objects.all()
+
+---
+
+## Errores comunes y soluciones rápidas
+
+### ModuleNotFoundError: face_recognition
+➡ Falta instalar dependencias
+**Solución:** reinstalar `dlib` + `face_recognition`
+
+---
+
+
+
+### ❌ No such file: haarcascade
+
+➡ Falta descargar  
+📥 [https://github.com/opencv/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml](https://github.com/opencv/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml)
+
+### ❌ Camera not opening
+
+➡ En el navegador: permitir acceso a la cámara
+
+## 📚 10. Tecnologías principales
+
+-   **Python 3.10+**
+    
+-   **Django 5+**
+    
+-   **dlib**
+    
+-   **face_recognition**
+    
+-   **opencv**
+    
+-   **scikit-image**
+    
+
+----------
+
+## ✔️ 11. Estado del proyecto
+
+El sistema está listo para:
+
+-   Implementación real
+    
+-   Pruebas funcionales y de usuario
+    
+-   Extensión a nuevos módulos:
+    
+    -   Historial de asistencias
+        
+    -   Reportes
+        
+    -   Exportación (Excel/CSV)
+        
+    -   Roles y permisos avanzados
+---
+Cada vez que quieras correr el proyecto:
+Lenguaje: Python 3.10+
 Dependencias clave: opencv-python, face_recognition, scikit-image, matplotlib, numpy
