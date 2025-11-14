@@ -11,6 +11,7 @@ from .forms import RegistroForm
 from .models import Usuario, Asistencia
 
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 
 # ==========================
 # HOME
@@ -114,3 +115,12 @@ def registrar_asistencia(request):
         return JsonResponse({"resultado": resultado})
 
     return render(request, 'asistencia.html')
+# ==========================
+# HISTORIAL DE VERIFICACIONES
+# ==========================
+@login_required
+def historial_verificaciones(request):
+    historial = Asistencia.objects.filter(usuario=request.user).order_by('-fecha', '-hora')
+    return render(request, 'historial.html', {'historial': historial})
+
+

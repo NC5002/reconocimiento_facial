@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Historial de Verificaciones{% endblock %}
+
+{% block content %}
+
+<h2 class="title-center">Historial de Verificaciones</h2>
+
+<div class="card">
+
+<table style="width:100%; border-collapse:collapse;">
+    <thead>
+        <tr style="background:#003366; color:white;">
+            <th style="padding:10px;">Fecha</th>
+            <th style="padding:10px;">Hora</th>
+            <th style="padding:10px;">Resultado</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in historial %}
+        <tr style="border-bottom:1px solid #ccc;">
+            <td style="padding:10px;">{{ item.fecha }}</td>
+            <td style="padding:10px;">{{ item.hora }}</td>
+            <td style="padding:10px;">
+
+                {% if item.resultado == 'aceptado' %}
+                    <span style="color:#0f5132; font-weight:bold;">✔ ACEPTADO</span>
+                {% else %}
+                    <span style="color:#842029; font-weight:bold;">✘ RECHAZADO</span>
+                {% endif %}
+
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" style="padding:10px; text-align:center;">
+                No hay verificaciones registradas.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+
+{% endblock %}

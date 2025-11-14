@@ -1,6 +1,8 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import registro, dashboard, registrar_asistencia
+from .views import historial_verificaciones
+
 
 urlpatterns = [
     path('registro/', registro, name='registro'),
@@ -8,4 +10,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('dashboard/', dashboard, name='dashboard'),
     path('asistencia/', registrar_asistencia, name='registrar_asistencia'),
+    path('historial/', historial_verificaciones, name='historial'),
 ]

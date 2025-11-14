@@ -7,12 +7,18 @@ class Usuario(AbstractUser):
 
 
 class Asistencia(models.Model):
+    RESULTADOS = [
+        ("aceptado", "Aceptado"),
+        ("rechazado", "Rechazado"),
+    ]
+
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha = models.DateField(auto_now_add=True)
     hora = models.TimeField(auto_now_add=True)
-    resultado = models.CharField(max_length=20)  # aceptado / rechazado
+    resultado = models.CharField(max_length=10, choices=RESULTADOS)
 
     def __str__(self):
         return f"{self.usuario.username} - {self.fecha} {self.hora} ({self.resultado})"
+
 
 
