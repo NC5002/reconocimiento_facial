@@ -5,36 +5,66 @@
     <style>
         body { font-family: Arial; margin: 40px; }
         .form-container { width: 350px; margin: auto; }
-        input[type=text], input[type=email], input[type=password] {
-            width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc;
-        }
-        input[type=file] {
-            margin: 10px 0;
-        }
-        button {
-            background: #0D6EFD; color: white;
-            padding: 10px; width: 100%; border: none;
-        }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; }
+        button { background: #0d6efd; color: white; padding: 10px; width: 100%; border: none; }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h2>Registro de Usuario</h2>
+    <h2>Registro</h2>
 
     {% if messages %}
         {% for message in messages %}
-            <p style="color: red;">{{ message }}</p>
+            <p style="color:red;">{{ message }}</p>
         {% endfor %}
     {% endif %}
 
-    <form method="POST" enctype="multipart/form-data">
+    <form id="formRegistro" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+
+        <h3>Captura tu rostro</h3>
+        <video id="video" width="300" autoplay></video>
+        <br><br>
+
+        <button type="button" onclick="capturar()">Capturar rostro</button>
+
+        <input type="file" name="frame" id="frameInput" hidden>
+
+        <br><br>
 
         <button type="submit">Registrar</button>
     </form>
 </div>
+
+<script>
+    // Activamos webcam
+    const video = document.getElementById('video');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => video.srcObject = stream);
+
+    function capturar() {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+
+        canvas.toBlob(function(blob){
+            const file = new File([blob], "frame.jpg", { type: "image/jpeg" });
+
+            const fileInput = document.getElementById("frameInput");
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            alert("Rostro capturado correctamente.");
+        }, 'image/jpeg');
+    }
+</script>
 
 </body>
 </html>

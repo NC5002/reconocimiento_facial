@@ -304,7 +304,7 @@ Cada vez que quieras correr el proyecto:
 ***cd C:\reconocimiento_facial
 .\.venv\Scripts\Activate.ps1
 cd asistencias
-python manage.py runserver***
+python manage.py runserver
 
 Abrir en el navegador:
 http://127.0.0.1:8000/

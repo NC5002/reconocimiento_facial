@@ -10,7 +10,17 @@ from django.http import JsonResponse
 from .forms import RegistroForm
 from .models import Usuario, Asistencia
 
+from django.contrib.auth import authenticate, login
 
+# ==========================
+# HOME
+def home(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    else:
+        return redirect('login')
+
+# =========================
 # ==========================
 # DASHBOARD
 # ==========================
@@ -24,25 +34,37 @@ def dashboard(request):
 # ==========================
 def registro(request):
     if request.method == 'POST':
-        form = RegistroForm(request.POST, request.FILES)
+
+        form = RegistroForm(request.POST)
+
+        # La imagen capturada viene como archivo 'frame'
+        frame = request.FILES.get('frame', None)
+
+        if frame is None:
+            messages.error(request, "Debes capturar tu rostro antes de registrarte.")
+            return render(request, 'registro.html', {'form': form})
+
         if form.is_valid():
 
             usuario = form.save(commit=False)
+            usuario.set_password(form.cleaned_data['password'])
 
-            # Procesar la imagen
-            imagen = face_recognition.load_image_file(request.FILES['foto'])
+            # Convertir frame (JPEG) a imagen numpy
+            file_bytes = np.frombuffer(frame.read(), np.uint8)
+            imagen = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
             encodings = face_recognition.face_encodings(imagen)
 
+            # Validar que haya rostro
             if len(encodings) == 0:
-                messages.error(request, "No se detectó ningún rostro en la imagen. Intente otra foto.")
+                messages.error(request, "No se detectó ningún rostro. Intenta colocarte mejor frente a la cámara.")
                 return render(request, 'registro.html', {'form': form})
 
-            # Guardar encoding y contraseña
+            # Guardar embedding facial
             usuario.encoding = encodings[0].tobytes()
-            usuario.set_password(form.cleaned_data['password'])
             usuario.save()
 
-            messages.success(request, "Usuario registrado correctamente. Ahora puedes iniciar sesión.")
+            messages.success(request, "Registro exitoso. Ya puedes iniciar sesión.")
             return redirect('login')
 
     else:
@@ -54,6 +76,7 @@ def registro(request):
 # ==========================
 # REGISTRO DE ASISTENCIA POR WEBCAM
 # ==========================
+
 @login_required
 def registrar_asistencia(request):
 

@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class Usuario(AbstractUser):
-    foto = models.ImageField(upload_to='rostros/')
     encoding = models.BinaryField(null=True, blank=True)
 
 
