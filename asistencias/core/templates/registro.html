@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Registro</title>
-    <style>
-        body { font-family: Arial; margin: 40px; }
-        .form-container { width: 350px; margin: auto; }
-        input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; }
-        button { background: #0d6efd; color: white; padding: 10px; width: 100%; border: none; }
-    </style>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
 
-<div class="form-container">
-    <h2>Registro</h2>
+{% block title %}Registro de Usuario{% endblock %}
+
+{% block content %}
+
+<h2 class="title-center">Registro de Usuario</h2>
+
+<div class="card">
 
     {% if messages %}
         {% for message in messages %}
-            <p style="color:red;">{{ message }}</p>
+            <div class="alert">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
@@ -24,28 +19,43 @@
         {% csrf_token %}
         {{ form.as_p }}
 
-        <h3>Captura tu rostro</h3>
-        <video id="video" width="300" autoplay></video>
-        <br><br>
+        <h3 style="color:#003366; margin-top:20px;">Captura tu Rostro</h3>
 
-        <button type="button" onclick="capturar()">Capturar rostro</button>
+        <video id="video" autoplay></video>
 
+        <button type="button" class="btn" onclick="capturar()">
+            Capturar rostro
+        </button>
+
+        <div id="msgCaptura" 
+            class="alert" 
+            style="display:none; background:#d1e7dd; color:#0f5132; border-left:5px solid #0f5132; margin-top:15px;">
+            Rostro capturado correctamente.
+        </div>
+
+        <!-- Archivo que guarda la captura -->
         <input type="file" name="frame" id="frameInput" hidden>
 
-        <br><br>
-
-        <button type="submit">Registrar</button>
+        <!-- ESTE ES EL CAMBIO CRÍTICO -->
+        <button type="submit" class="btn" style="margin-top:20px;">
+            Registrar
+        </button>
     </form>
+
+
 </div>
 
 <script>
-    // Activamos webcam
+    // Activar webcam
     const video = document.getElementById('video');
 
     navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => video.srcObject = stream);
+        .then(stream => video.srcObject = stream)
+        .catch(err => alert("No se pudo acceder a la cámara: " + err));
 
-    function capturar() {
+    // Capturar imagen del video
+        function capturar() {
+
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -53,18 +63,41 @@
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0);
 
-        canvas.toBlob(function(blob){
-            const file = new File([blob], "frame.jpg", { type: "image/jpeg" });
+        canvas.toBlob(function(blob) {
 
-            const fileInput = document.getElementById("frameInput");
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
+            if (!blob) {
+                alert("Error: no se pudo capturar la imagen.");
+                return;
+            }
 
-            alert("Rostro capturado correctamente.");
+            const reader = new FileReader();
+
+            reader.onloadend = function () {
+
+                // Convertir el blob a ArrayBuffer
+                const arrayBuffer = reader.result;
+
+                // Crear archivo REAL con contenido garantizado
+                const file = new File([arrayBuffer], "captura.jpg", { type: "image/jpeg" });
+
+                const frameInput = document.getElementById("frameInput");
+
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                frameInput.files = dataTransfer.files;
+
+                console.log("ARCHIVO INSERTADO:", frameInput.files[0]);  // DEBE mostrar UploadedFile
+                document.getElementById("msgCaptura").style.display = "block";
+            };
+
+            reader.readAsArrayBuffer(blob);
+
         }, 'image/jpeg');
     }
+
+
+
+
 </script>
 
-</body>
-</html>
+{% endblock %}

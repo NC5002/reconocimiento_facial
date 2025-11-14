@@ -1,26 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Registrar Asistencia</title>
-</head>
-<body>
-<h2>Registro de Asistencia</h2>
+{% extends 'base.html' %}
+{% load static %}
 
-<video id="video" width="400" autoplay></video>
-<br><br>
-<button id="capturar">Registrar mi rostro</button>
+{% block title %}Registrar Asistencia{% endblock %}
 
-<p id="resultado"></p>
+{% block content %}
+
+<h2 class="title-center">Registro de Asistencia</h2>
+
+<div class="card" style="max-width:600px; margin:auto; text-align:center; padding:30px;">
+
+    <h3 style="color:#003366;">Colóquese frente a la cámara</h3>
+
+    <video id="video" autoplay playsinline style="margin-top:15px;"></video>
+
+    <button class="btn" onclick="capturar()" style="margin-top:20px; width:100%; font-size:18px;">
+        Registrar Asistencia
+    </button>
+
+    <div id="mensaje" class="alert" style="display:none; margin-top:20px;"></div>
+
+</div>
 
 <script>
+
+    // ============================
+    // ACTIVAR WEBCAM
+    // ============================
     const video = document.getElementById('video');
-    const resultado = document.getElementById('resultado');
 
-    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-        video.srcObject = stream;
-    });
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => video.srcObject = stream)
+        .catch(err => alert("No se pudo acceder a la cámara: " + err));
 
-    document.getElementById('capturar').onclick = function() {
+
+    // ============================
+    // CONTADOR DE INTENTOS FALLIDOS
+    // ============================
+    let intentosFallidos = 0;
+
+
+    // ============================
+    // FUNCIÓN PARA CAPTURAR ROSTRO
+    // ============================
+    function capturar() {
+
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -29,21 +52,78 @@
         ctx.drawImage(video, 0, 0);
 
         canvas.toBlob(function(blob) {
-            const formData = new FormData();
-            formData.append('frame', blob);
 
-            fetch("", {
-                method: "POST",
-                headers: {'X-CSRFToken': '{{ csrf_token }}'},
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                resultado.innerHTML = "Resultado: " + data.resultado;
-            });
+            if (!blob) {
+                mostrarMensaje("No se pudo capturar la imagen.", "error");
+                return;
+            }
+
+            enviarAsistencia(blob);
+
         }, 'image/jpeg');
-    };
+    }
+
+
+    // ============================
+    // ENVIAR IMAGEN POR POST AJAX
+    // ============================
+    function enviarAsistencia(blob) {
+
+        const formData = new FormData();
+        formData.append('frame', blob, "captura.jpg");
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch("{% url 'registrar_asistencia' %}", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.resultado === "aceptado") {
+
+                mostrarMensaje("Asistencia registrada correctamente.", "success");
+                intentosFallidos = 0; // reinicia contador
+
+            } else {
+                intentosFallidos++;
+
+                mostrarMensaje("Asistencia rechazada. Intento " + intentosFallidos + " de 3.", "error");
+
+                if (intentosFallidos >= 3) {
+                    mostrarMensaje("Demasiados intentos fallidos. Cerrando sesión...", "error");
+
+                    setTimeout(() => {
+                        window.location.href = "{% url 'logout' %}";
+                    }, 1500);
+                }
+            }
+        })
+        .catch(() => {
+            mostrarMensaje("Error al procesar la solicitud.", "error");
+        });
+    }
+
+
+    // ============================
+    // MOSTRAR MENSAJES
+    // ============================
+    function mostrarMensaje(texto, tipo) {
+        const div = document.getElementById("mensaje");
+        div.style.display = "block";
+        div.innerText = texto;
+
+        if (tipo === "success") {
+            div.style.background = "#d1e7dd";
+            div.style.color = "#0f5132";
+            div.style.borderLeft = "5px solid #0f5132";
+        } else {
+            div.style.background = "#f8d7da";
+            div.style.color = "#842029";
+            div.style.borderLeft = "5px solid #842029";
+        }
+    }
+
 </script>
 
-</body>
-</html>
+{% endblock %}

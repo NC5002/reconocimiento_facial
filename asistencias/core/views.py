@@ -21,6 +21,11 @@ def home(request):
         return redirect('login')
 
 # =========================
+
+# LANDING PAGE
+def landing(request):
+    return render(request, 'landing.html')
+
 # ==========================
 # DASHBOARD
 # ==========================
@@ -36,42 +41,44 @@ def registro(request):
     if request.method == 'POST':
 
         form = RegistroForm(request.POST)
-
-        # La imagen capturada viene como archivo 'frame'
         frame = request.FILES.get('frame', None)
+        print("DEBUG FRAME:", frame)
+
 
         if frame is None:
             messages.error(request, "Debes capturar tu rostro antes de registrarte.")
             return render(request, 'registro.html', {'form': form})
+
+        print("ERRORES DE FORMULARIO:", form.errors)
 
         if form.is_valid():
 
             usuario = form.save(commit=False)
             usuario.set_password(form.cleaned_data['password'])
 
-            # Convertir frame (JPEG) a imagen numpy
+            # Convertir la imagen capturada a un array
             file_bytes = np.frombuffer(frame.read(), np.uint8)
             imagen = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
             encodings = face_recognition.face_encodings(imagen)
 
-            # Validar que haya rostro
             if len(encodings) == 0:
-                messages.error(request, "No se detectó ningún rostro. Intenta colocarte mejor frente a la cámara.")
+                messages.error(request, "No se detectó ningún rostro. Intenta nuevamente.")
                 return render(request, 'registro.html', {'form': form})
 
-            # Guardar embedding facial
+            # Guardar encoding facial
             usuario.encoding = encodings[0].tobytes()
             usuario.save()
 
-            messages.success(request, "Registro exitoso. Ya puedes iniciar sesión.")
+            messages.success(request, "Registro completado correctamente. Ahora puedes iniciar sesión.")
+
+            # 👇 ESTA ES LA REDIRECCIÓN FINAL
             return redirect('login')
 
     else:
         form = RegistroForm()
 
     return render(request, 'registro.html', {'form': form})
-
 
 # ==========================
 # REGISTRO DE ASISTENCIA POR WEBCAM

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Unidad Educativa Eduardo Abaroa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* HEADER */
+        header {
+            background: #003366;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(to right, #003366, #0d6efd);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: white;
+            color: #003366;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .hero .btn:hover {
+            background: #f2f2f2;
+        }
+
+        /* FEATURES SECTION */
+        .features {
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .features h3 {
+            color: #003366;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .feature-box {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            background: white;
+            width: 260px;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .feature h4 {
+            color: #0d6efd;
+            margin-bottom: 10px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #003366;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Unidad Educativa "Eduardo Abaroa"</h1>
+</header>
+
+<section class="hero">
+    <h2>Sistema Inteligente de Registro de Asistencia</h2>
+    <p>La Unidad Educativa Eduardo Abaroa implementa un sistema moderno de control de asistencia basado en reconocimiento facial para garantizar seguridad, eficiencia y una gestión académica de excelencia.</p>
+
+    <a href="{% url 'login' %}" class="btn">Ingresar al Sistema</a>
+</section>
+
+<section class="features">
+    <h3>Características del Sistema</h3>
+
+    <div class="feature-box">
+
+        <div class="feature">
+            <h4>Reconocimiento Facial</h4>
+            <p>Identificación precisa mediante tecnología biométrica avanzada.</p>
+        </div>
+
+        <div class="feature">
+            <h4>Seguridad Institucional</h4>
+            <p>Garantiza el acceso exclusivo a usuarios autorizados.</p>
+        </div>
+
+        <div class="feature">
+            <h4>Gestión Eficiente</h4>
+            <p>Optimiza el control de asistencia y reduce errores manuales.</p>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    © {{ now|date:"Y" }} Unidad Educativa “Eduardo Abaroa” — Todos los derechos reservados
+</footer>
+
+</body>
+</html>

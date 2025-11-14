@@ -1,0 +1,109 @@
+/* =======================================
+   ESTILOS GENERALES - Unidad Educativa
+   ======================================= */
+
+body {
+    margin: 0;
+    background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* HEADER GENERAL */
+.header {
+    background: #003366;
+    color: white;
+    padding: 18px 30px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* CONTENEDORES */
+.container {
+    width: 90%;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px 0;
+}
+
+/* TITULOS */
+.title-center {
+    text-align: center;
+    color: #003366;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* BOTONES */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #0d6efd;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: .3s;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #0056c7;
+}
+
+/* TARJETAS */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+/* FORMULARIOS */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #003366;
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0d6efd;
+}
+
+/* FOOTER */
+.footer {
+    background: #003366;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    margin-top: 40px;
+}
+
+/* VIDEO CAMARA */
+video {
+    border: 3px solid #003366;
+    border-radius: 6px;
+    width: 100%;
+}
+
+/* ALERTAS */
+.alert {
+    padding: 10px;
+    background: #ffc107;
+    color: #333;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
